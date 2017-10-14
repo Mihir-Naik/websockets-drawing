@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.15/p5.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <title>WS Drawing</title>
+</head>
+<body>
+    <h1>Web Socket Drawing</h1>
+    <button id="resetBtn">Reset</button>
+    <script>
+        var socket = io()
+        var resetBtn = document.querySelector('#resetBtn')
+
+        function setup(){
+            createCanvas(400,400)
+            background('grey')
+        }
+
+        function draw(){
+            socket.on('draw', function(data){
+                rect(data.x, data.y, 5, 5)
+                fill(137, 107, 240, 0.8)
+                
+            })
+        }
+
+        function mouseDragged(){
+            socket.emit('drag', {x: mouseX, y: mouseY})
+        }
+            
+        socket.on('clearAll', setup)
+
+        resetBtn.addEventListener('click', function(){
+            socket.emit('reset')
+        })
+
+    </script>
+    
+</body>
+</html>
